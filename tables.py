@@ -1,7 +1,8 @@
 import sqlalchemy
 import enum
-from sqlalchemy import Column, ForeignKey, String, Integer, Enum, UniqueConstraint
-from .database import metadata, engine
+from sqlalchemy import Column, ForeignKey, String, Integer, Enum
+from database import metadata, engine
+
 
 # Enum class
 class Role(enum.Enum):
@@ -41,7 +42,7 @@ selection_files = sqlalchemy.Table(
     "selectionFiles",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("path", String, nullable=False),
+    Column("base64File", String, nullable=False),
     Column("candidatesFile_id", Integer, ForeignKey("candidatesFiles.id", ondelete="CASCADE")),
 )
 
