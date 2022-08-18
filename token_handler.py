@@ -14,7 +14,7 @@ def init_blacklist_file():
 def get_token(user_email: str) -> str:
     payload = {
         "user_email": user_email,
-        "expires": time.time() + 600
+        "expires": time.time() + 3600
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
