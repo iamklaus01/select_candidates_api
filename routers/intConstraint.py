@@ -35,7 +35,7 @@ async def store_i_constraint(i_constraints : List[IntegerConstraintIn]):
         )
         await database.execute(query)
 
-    return {"message" : "Created"}
+    return {"message" : "Constraints added"}
 
 
 @router.put("/iconstraints/update/{id}", response_model=IntegerConstraint, status_code=status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
