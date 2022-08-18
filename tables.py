@@ -14,9 +14,9 @@ class ValueType(enum.Enum):
     multiple = "ENUM"
 
 class Metric(enum.Enum):
-    moreThan = "=>"
+    moreThan = ">="
     lessThan = "<="
-    equalTo = "="
+    equalTo = "=="
    
 
 users = sqlalchemy.Table(
@@ -77,7 +77,7 @@ enum_constraints = sqlalchemy.Table(
     "econstraints",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("value", Enum(ValueType), nullable=False),
+    Column("value", String, nullable=False),
     Column("number", Integer, nullable=False),
     Column("metric", Enum(Metric), nullable=False),
     Column("feature_id", Integer, ForeignKey("features.id", ondelete="CASCADE")),
