@@ -21,8 +21,6 @@ async def get_constraint(feature_id : int, type : ValueType):
     return constraint
 
 
-
-
 async def solve(c_file : CandidateFile, int_features : List[Feature], enum_features : List[Feature]):
 
     datas = read_file(c_file.path)
