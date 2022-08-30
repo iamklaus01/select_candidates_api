@@ -25,7 +25,7 @@ async def get_single_i_constraints(id:int):
 
 
 @router.post("/iconstraints/add", status_code=status.HTTP_201_CREATED, dependencies=[Depends(JWTBearer())])
-async def store_i_constraint(i_constraints : List[IntegerConstraintIn]):
+async def add_integer_constraint(i_constraints : List[IntegerConstraintIn]):
 
     for constraint in i_constraints:
         query = integer_constraints.insert().values(

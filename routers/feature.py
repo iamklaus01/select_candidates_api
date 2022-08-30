@@ -21,10 +21,12 @@ async def get_file_features(cd_file_id :int):
 async def get_single_file_feature(id:int):
     query = features.select().where(features.c.id == id)
     single_feature = await database.fetch_one(query)
+    if not single_feature:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Caractéristique introuvable ou non prise en compte.")
     return single_feature
 
 @router.get("/features/add/constraints", dependencies=[Depends(JWTBearer())])
-async def add_constraint_to_feature(feature_id:int):
+async def get_details_on_feature_values(feature_id:int):
     query = features.select().where(features.c.id == feature_id)
     single_feature = await database.fetch_one(query)
     if not single_feature:

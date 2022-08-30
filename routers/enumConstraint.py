@@ -24,7 +24,7 @@ async def get_single_i_constraints(id:int):
 
 
 @router.post("/econstraints/add", status_code=status.HTTP_201_CREATED, dependencies=[Depends(JWTBearer())])
-async def store_e_constraint(e_constraints : List[EnumConstraintIn]):
+async def add_enum_constraint(e_constraints : List[EnumConstraintIn]):
 
     for constraint in e_constraints:
         query = enum_constraints.insert().values(
