@@ -1,3 +1,5 @@
+from datetime import date
+import email
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from passlib.hash import pbkdf2_sha256
 import re
@@ -26,10 +28,18 @@ async def register(fullname:str = Form(...), email:str = Form(...), password:str
         name = fullname,
         email = email,
         password = hash_pwd,
-        role = Role.common
+        role = Role.common,
+        active = 1,
+        created_at = date.today()
     )
-    await database.execute(query)
-    return({"message" : "Le compte a été créé avec succès"})
+    try:
+        await database.execute(query)
+        return({"message" : "Le compte a été créé avec succès"})
+    except(Exception):
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Une erreur est survenue... Il se pourrait que l'adresse mail soit déjà utilisée!")
+
+
+
 
 # For user sign in
 @router.post("/login", status_code=status.HTTP_200_OK)
@@ -40,6 +50,9 @@ async def login(usr:LoginSchema):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
     if not pbkdf2_sha256.verify(usr.password, user.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
+    if not user.active:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Votre compte n'est plus actif")
+
     return {"user_id":user.id, "username":user.name, "role": Role[user.role].value, "token":get_token(user.email)}
 
 
@@ -51,21 +64,23 @@ async def logout(req:Request):
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Une erreur est survenue! Vous êtes toujours connectés, Veuillez réessayer")
 
 
-@router.delete("/admin/delete", status_code=status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
-async def delete_user(user_id:str = Form(...), admin_email:str = Form(...), admin_pwd:str = Form(...)):
-    query = users.select().where(users.c.id  == admin_email)
+@router.delete("/delete", status_code=status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
+async def delete_user(user_id:int = Form(...), usr_email:str = Form(...), pwd:str = Form(...)):
+    query = users.select().where(users.c.id  == user_id)
     user = await database.fetch_one(query)
+
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
-    if not pbkdf2_sha256.verify(admin_pwd, user.password):
+    if not pbkdf2_sha256.verify(pwd, user.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
-    if Role[user.role] != Role.admin:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Vous n'êtes pas autorisé(e)s à réaliser une telle opération")
     
-    query = users.delete().where(users.c.id == user_id)
+    query = users.update().where(users.c.id == user_id).values(
+        active = 0,
+        email = '[Archived]'+usr_email
+    )
     await database.execute(query)
     return {
         "removed": True,
-        "message": "Utilisateur supprimée avec succès"
+        "message": "Votre compte a été supprimé avec succès"
     }
 
