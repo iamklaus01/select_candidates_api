@@ -1,6 +1,6 @@
 import sqlalchemy
 import enum
-from sqlalchemy import Column, ForeignKey, String, Integer, Enum
+from sqlalchemy import Column, ForeignKey, String, Integer, Enum, DateTime, Boolean
 from database import metadata, engine
 
 
@@ -27,6 +27,8 @@ users = sqlalchemy.Table(
     Column("email", String, nullable=False, unique = True),
     Column("password", String(256)),
     Column("role", Enum(Role), default=Role.common),
+    Column("active", Boolean, default=True),
+    Column("created_at", DateTime),
 )
 
 candidates_files = sqlalchemy.Table(
@@ -43,16 +45,11 @@ selection_files = sqlalchemy.Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("base64File", String, nullable=False),
-    Column("candidatesFile_id", Integer, ForeignKey("candidatesFiles.id", ondelete="CASCADE")),
-)
-
-solver_stats = sqlalchemy.Table(
-    "solverStats",
-    metadata,
-    Column("id", Integer, primary_key=True),
     Column("status", String),
-    Column("solutions", Integer),
-    Column("selectionFile_id", Integer, ForeignKey("selectionFiles.id", ondelete="CASCADE")),
+    Column("nbe_sol", Integer),
+
+    Column("satisfaction", Integer, nullable=True),
+    Column("candidatesFile_id", Integer, ForeignKey("candidatesFiles.id", ondelete="CASCADE")),
 )
 
 features = sqlalchemy.Table(
