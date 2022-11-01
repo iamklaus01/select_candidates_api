@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 
@@ -16,6 +17,8 @@ class User(BaseModel):
     email : str
     password : str
     role: Role
+    active: bool
+    created_at: datetime
 
 class LoginSchema(BaseModel):
     email : str
