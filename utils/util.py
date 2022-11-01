@@ -1,4 +1,5 @@
 import enum
+from numpy import dtype
 import pandas as pd
 
 from datetime import datetime
@@ -33,12 +34,17 @@ def get_file_path(type:FileType, name:str):
         return "files/selected/"+name
 
 
-def extract_features(path:str, n_col_to_ignore:int):
+def extract_features(path:str):
     data = read_file(path)
-    return list(data.columns)[n_col_to_ignore:], get_features_type(data, n_col_to_ignore)
+    features = get_features_and_type(list(data.columns), list(data.dtypes))
+    return features
 
-def get_features_type(data:pd.DataFrame, n:int):
-    return list(data.dtypes[n:])
+def get_features_and_type(columns, types):
+    features_types = {}
+    for col, type in zip(columns, types):
+        features_types[col] = ( "Enumeration", "Entier" ) [type == dtype('int64')]
+
+    return features_types
 
 async def check_user(user_id : int):
     query = users.select().where(users.c.id  == user_id)
@@ -47,18 +53,19 @@ async def check_user(user_id : int):
         return False
     return True
 
-async def add_int_constraint(feature:Feature):
+async def get_details_on_int_feature(feature:Feature):
     query = candidates_files.select().where(candidates_files.c.id == feature.candidatesFile_id)
     c_file = await database.fetch_one(query)
     data = read_file(c_file.path)
     values = list(data[feature.label])
     return {
+        "label" : feature.label,
         'min' : min(values),
         'max' : max(values),
         'feature_id' : feature.id
     }
 
-async def add_enum_constraint(feature:Feature):
+async def get_details_on_enum_feature(feature:Feature):
     query = candidates_files.select().where(candidates_files.c.id == feature.candidatesFile_id)
     c_file = await database.fetch_one(query)
     data = read_file(c_file.path)
@@ -70,7 +77,8 @@ async def add_enum_constraint(feature:Feature):
         value_with_count.append(
             {
                 'value' : val,
-                'number' : n
+                'number' : n,
+                'feature_id' : feature.id
             }
         )
-    return value_with_count
+    return {feature.label : value_with_count}
