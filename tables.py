@@ -47,7 +47,6 @@ selection_files = sqlalchemy.Table(
     Column("base64File", String, nullable=False),
     Column("status", String),
     Column("nbe_sol", Integer),
-
     Column("satisfaction", Integer, nullable=True),
     Column("candidatesFile_id", Integer, ForeignKey("candidatesFiles.id", ondelete="CASCADE")),
 )
