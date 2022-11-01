@@ -1,2 +1,8 @@
 env/
 files/candidates
+files/selected
+__pycache
+routers/__pycache
+utils/__pycache
+models/__pycache
+blacklist_db.txt
