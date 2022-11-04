@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from typing import List
 from database import database
 
-from models.enumConstraintSchema import EnumConstraint, EnumConstraintIn
+from models.enumConstraintSchema import EnumConstraint, EnumConstraintIn, AllEnumConstraintIn
 from tables import enum_constraints
 from token_dependencie import JWTBearer
 
@@ -24,9 +24,9 @@ async def get_single_i_constraints(id:int):
 
 
 @router.post("/econstraints/add", status_code=status.HTTP_201_CREATED, dependencies=[Depends(JWTBearer())])
-async def add_enum_constraint(e_constraints : List[EnumConstraintIn]):
+async def add_enum_constraint(e_constraints : AllEnumConstraintIn):
 
-    for constraint in e_constraints:
+    for constraint in e_constraints.data:
         query = enum_constraints.insert().values(
             value  = constraint.value,
             number  = constraint.number,
@@ -35,7 +35,7 @@ async def add_enum_constraint(e_constraints : List[EnumConstraintIn]):
         )
         await database.execute(query)
 
-    return {"message" : "Created"}
+    return {"message" : "Constraints Created"}
 
 
 @router.put("/econstraints/update/{id}", response_model=EnumConstraint, status_code=status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
