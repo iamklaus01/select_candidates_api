@@ -1,6 +1,6 @@
 import sqlalchemy
 import enum
-from sqlalchemy import Column, ForeignKey, String, Integer, Enum, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, String, Integer, Enum, DateTime, Boolean, Text
 from database import metadata, engine
 
 
@@ -10,7 +10,7 @@ class Role(enum.Enum):
     common = "COMMON"
 
 class ValueType(enum.Enum):
-    integer = "INTEGER"
+    number = "NUMBER"
     multiple = "ENUM"
 
 class Metric(enum.Enum):
@@ -27,6 +27,8 @@ users = sqlalchemy.Table(
     Column("email", String, nullable=False, unique = True),
     Column("password", String(256)),
     Column("role", Enum(Role), default=Role.common),
+    Column("verified", Boolean, nullable=False, default='False'),
+    Column("verification_code", String, nullable=True, unique=True),
     Column("active", Boolean, default=True),
     Column("created_at", DateTime),
 )
@@ -44,9 +46,9 @@ selection_files = sqlalchemy.Table(
     "selectionFiles",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("base64File", String, nullable=False),
+    Column("encodedFile", Text, nullable=False),
     Column("status", String),
-    Column("nbe_sol", Integer),
+    Column("nbre_sol", Integer),
     Column("satisfaction", Integer, nullable=True),
     Column("candidatesFile_id", Integer, ForeignKey("candidatesFiles.id", ondelete="CASCADE")),
 )
