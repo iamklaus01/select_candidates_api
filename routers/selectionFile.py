@@ -2,11 +2,9 @@ from fastapi import APIRouter, Depends, status
 from typing import List
 from database import database
 
-
 from models.selectionFileSchema import SelectionFile, SelectionFileIn
 from tables import selection_files
 from token_dependencie import JWTBearer
-
 
 
 router = APIRouter()
@@ -28,7 +26,10 @@ async def get_single_selection_file(id:int):
 async def store_selection_file(sol_file : SelectionFileIn):
     
     query = selection_files.insert().values(
-        base64File = sol_file.base64File,
+        encodedFile = sol_file.encodedFile,
+        status = sol_file.status,
+        nbre_sol = sol_file.n_sol,
+        satisfaction = sol_file.satisfaction,
         candidatesFile_id = sol_file.candidatesFile_id,
     )
     record_id = await database.execute(query)
@@ -44,7 +45,7 @@ async def delete_selection_file(id:int):
     await database.execute(query)
     return {
         "removed": True,
-        "message": "Opération effectuée avec succès"
+        "message": "Operation completed successfully"
     }
 
 
