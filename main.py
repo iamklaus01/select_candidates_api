@@ -26,10 +26,10 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-app.include_router(auth.router,prefix="/auth", tags=["Authentification"])
-app.include_router(candidatesFile.router,prefix="/candidates/files", tags=["Fichier de candidatures"])
-app.include_router(selectionFile.router,prefix="/candidates/selection", tags=["Candidatures sélectionnées"])
-app.include_router(feature.router,prefix="/candidates", tags=["Caractéristiques des candidatures"])
-app.include_router(intConstraint.router,prefix="/candidates/constraints", tags=["Contraintes sur des entiers"])
-app.include_router(enumConstraint.router,prefix="/candidates/constraints", tags=["Contraintes sur des énumérations"])
+app.include_router(auth.router,prefix="/auth", tags=["Authentication"])
+app.include_router(candidatesFile.router,prefix="/candidates/files", tags=["Files of candidacy"])
+app.include_router(selectionFile.router,prefix="/candidates/selection", tags=["Selected candidacy"])
+app.include_router(feature.router,prefix="/candidates", tags=["Features of candidates"])
+app.include_router(intConstraint.router,prefix="/candidates/constraints", tags=["Constraints on integer"])
+app.include_router(enumConstraint.router,prefix="/candidates/constraints", tags=["Constraints on enumerations"])
 app.include_router(admin.router, prefix="/admin", tags=["Administration"])
