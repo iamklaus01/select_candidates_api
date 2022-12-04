@@ -59,7 +59,7 @@ async def delete_e_constraint(id:int):
     await database.execute(query)
     return {
         "removed": True,
-        "message": "Contrainte retirée avec succès"
+        "message": "Constraint removed successfully"
     }
 
 

@@ -3,7 +3,7 @@ from typing import List
 from database import database
 
 
-from models.integerConstraintSchema import IntegerConstraint, IntegerConstraintIn
+from models.integerConstraintSchema import IntegerConstraint, AllIntegerConstraintIn, IntegerConstraintIn
 from tables import integer_constraints
 from token_dependencie import JWTBearer
 
@@ -25,9 +25,9 @@ async def get_single_i_constraints(id:int):
 
 
 @router.post("/iconstraints/add", status_code=status.HTTP_201_CREATED, dependencies=[Depends(JWTBearer())])
-async def add_integer_constraint(i_constraints : List[IntegerConstraintIn]):
+async def add_integer_constraint(i_constraints : AllIntegerConstraintIn):
 
-    for constraint in i_constraints:
+    for constraint in i_constraints.data:
         query = integer_constraints.insert().values(
             min_value = constraint.min_value,
             max_value = constraint.max_value,
@@ -58,7 +58,7 @@ async def delete_i_constraint(id:int):
     await database.execute(query)
     return {
         "removed": True,
-        "message": "Contrainte retirée avec succès"
+        "message": "Constraint removed successfully"
     }
 
 
