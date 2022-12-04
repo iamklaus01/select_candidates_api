@@ -10,7 +10,6 @@ class UserIn(BaseModel):
     password : str
     role: Role
 
-
 class User(BaseModel):
     id : int
     name : str
@@ -18,12 +17,13 @@ class User(BaseModel):
     password : str
     role: Role
     active: bool
+    verified : bool
+    verification_code : str
     created_at: datetime
 
 class LoginSchema(BaseModel):
     email : str
     password : str
-
 
 class Token(BaseModel):
     access_token: str
@@ -32,3 +32,4 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
