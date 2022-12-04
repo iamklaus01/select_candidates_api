@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class SelectionFileIn(BaseModel):
-    base64File : str
+    encodedFile : str
     status : str
     n_sol : int
     satisfaction : int
@@ -10,8 +10,8 @@ class SelectionFileIn(BaseModel):
 
 class SelectionFile(BaseModel):
     id : int
-    base64File : str
+    encodedFile : str
     status : str
-    n_sol : int
+    nbre_sol : int
     satisfaction : int
     candidatesFile_id : int
