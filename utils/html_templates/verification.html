@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block content %}
+
+<p>Hello {{first_name}},</p>
+<p>
+  Thanks for creating an account with us. Please verify your email address by
+  clicking the button below.
+</p>
+<table class="btn btn-primary">
+    <caption></caption>
+    <th></th>
+  <tbody>
+    <tr>
+      <td>
+        <table>
+            <caption></caption>
+            <th></th>
+          <tbody>
+            <tr>
+              <td>
+                <a href="{{url}}" target="_blank">Verify email address</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Yours truly.</p>
+
+{% endblock %}
