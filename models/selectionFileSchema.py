@@ -6,6 +6,7 @@ class SelectionFileIn(BaseModel):
     status : str
     n_sol : int
     satisfaction : int
+    features : str
     candidatesFile_id : int
 
 class SelectionFile(BaseModel):
@@ -14,4 +15,9 @@ class SelectionFile(BaseModel):
     status : str
     nbre_sol : int
     satisfaction : int
+    features: str
     candidatesFile_id : int
+
+class SelectionFileToDelete(BaseModel):
+    user_pwd : str
+    user_id : int
