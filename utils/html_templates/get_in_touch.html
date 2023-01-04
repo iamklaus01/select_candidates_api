@@ -1,0 +1,95 @@
+<table>
+    <caption></caption>
+      <tr>
+          <td>
+              <p class="celect">C-Elect</p>
+          </td>
+      </tr>
+  </table>
+  
+  <table class="particular">
+    <caption></caption>
+      <tr>
+          <td class="td">
+        <p>Hello Admin,</p>
+              <p>{{ username }} with email address {{ email }} tried to contact you !</p>
+              <p>Content of the message:</p>
+              <p class="content">{{ message }}</p>
+              <a href="mailto:{{email}}" class="btn-email-verify">Reply</a>
+          </td>
+      </tr>
+  </table>
+  
+  <table>
+    <caption></caption>
+      <tr>
+          <td class="td">
+              <p class="p-footer">This message will be received by all the administrators of the platform.</p>
+          </td>
+      </tr>
+    <tr>
+      <td class="copyright"><span>&copy;C-Elect 2022</span></td>
+    </tr>
+  </table>
+  
+  <style>
+    table{
+      font-family: Helvetica, Arial, sans-serif; 
+      background: #fff; 
+      margin: 0 auto;
+      width: 60%;
+    }
+  
+    table.particular{
+      border-top: 1px solid #ddd; 
+      border-bottom: 1px solid #ddd;
+    }
+    td{
+      padding-top: 30px; 
+      padding-bottom: 30px; 
+    }
+    .td{
+      padding-left: 10px; 
+      padding-right: 10px; 
+      text-align: center;
+    }
+    .btn-email-verify{
+      margin: 2rem 0; 
+      display: inline-block; 
+      background: #212529; 
+      color: #fff; 
+      text-decoration: none; 
+      padding: 20px; 
+      border-radius: 4px; 
+      font-size: 20px;
+    }
+    .celect{
+      font-size: larger;
+       font-weight:bold;
+      text-align: center;
+      color: #23468c;
+    }
+    .p-footer{
+      color: #777777; 
+      line-height: 20px;
+        font-size:14px;
+    }
+    p{
+        margin:.5rem 0;
+        color:#48545d;
+    }
+    .copyright{
+        text-align:center;
+        color:#48545d;
+        font-size:12px;
+    }
+    .content{
+        text-align: center;
+        padding: .8rem;
+    }
+    @media (max-width: 650px) {
+      table{
+        width: 100%;
+      }
+    }
+  </style>
