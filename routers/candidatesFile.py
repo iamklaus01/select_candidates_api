@@ -6,16 +6,18 @@ from sqlalchemy import select
 
 from database import database
 import shutil
+from passlib.hash import pbkdf2_sha256
 
 
 from tables import Role, ValueType, candidates_files, features, users, integer_constraints, enum_constraints
 from token_dependencie import JWTBearer
 from solver.solver import solve
-from models.candidatesFileSchema import CandidateFile
+from models.candidatesFileSchema import CandidateFile, CandidateFileToDelete
 from models.featureSchema import AllFeatureIn
 from utils.util import check_user, rename_file, get_file_path, extract_features, FileType, format_int_constraints, format_enum_constraints, format_feature_label_id
 
 FILE_NOT_FOUND_MESSAGE = "File not found! Make sure you have the correct ID"
+USER_NOT_FOUND_MESSAGE = "User not found! The email address or username is incorrect"
 
 router = APIRouter()
 
@@ -112,8 +114,17 @@ async def store_candidates_file_feature(user_id:int , data:AllFeatureIn):
     return {"message" : "Features have been saved successfully"}
 
 
-@router.delete("/remove", status_code = status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
-async def delete_candidates_file(id:int):
+@router.post("/remove/{id}", status_code = status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
+async def delete_candidates_file(id:int, data:CandidateFileToDelete):
+
+    query = users.select().where(users.c.id  == data.user_id)
+    user = await database.fetch_one(query)
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
+    if not pbkdf2_sha256.verify(data.user_pwd, user.password):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=USER_NOT_FOUND_MESSAGE)
+
     query = candidates_files.select().where(candidates_files.c.id == id)
     file_to_delete = await database.fetch_one(query)
     if not file_to_delete:
@@ -126,12 +137,12 @@ async def delete_candidates_file(id:int):
         remove(getcwd() + "/" + file_to_delete["path"])
         return {
             "removed": True,
-            "message" : "Le fichier et ses données correspondantes ont été supprimé avec succès:"
+            "message" : "The file and its corresponding data have been successfully deleted"
         }   
     except FileNotFoundError:
         return {
             "removed": False,
-            "message": "Une erreur est survenue durant la supression du fichier"
+            "message": "An error occurred while deleting the file"
         }
 
 
