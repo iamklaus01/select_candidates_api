@@ -34,8 +34,8 @@ async def register(fullname:str = Form(...), email:str = Form(...), password:str
     return({"message" : "The admin account has been successfully created"})
 
 @router.delete("/user/delete", status_code=status.HTTP_200_OK, dependencies=[Depends(JWTBearer())])
-async def delete_user(user_id:int = Form(...), admin_email:str = Form(...), admin_pwd:str = Form(...)):
-    query = users.select().where(users.c.email  == admin_email)
+async def delete_user(user_id:int = Form(...), admin_id:int = Form(...), admin_pwd:str = Form(...)):
+    query = users.select().where(users.c.id  == admin_id)
     user = await database.fetch_one(query)
 
     if not user:
@@ -91,8 +91,10 @@ async def get_system_users(user_id :int):
     if Role[user.role] != Role.admin:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized for such an operation")
 
-    query = select([users.c.name, users.c.email, users.c.role, users.c.active, users.c.created_at])
+    query = select([users.c.id, users.c.name, users.c.email, users.c.role, users.c.active, users.c.created_at])
     all_users = await database.fetch_all(query)
     
 
     return all_users
+
+    
