@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import database
-from routers import admin, auth, candidatesFile, selectionFile, feature, intConstraint, enumConstraint
+from routers import user, admin, auth, candidatesFile, selectionFile, feature, intConstraint, enumConstraint
 
 app = FastAPI(title="Celect")
 
@@ -26,6 +26,7 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+app.include_router(user.router,prefix="/user", tags=["Get In Touch"])
 app.include_router(auth.router,prefix="/auth", tags=["Authentication"])
 app.include_router(candidatesFile.router,prefix="/candidates/files", tags=["Files of candidacy"])
 app.include_router(selectionFile.router,prefix="/candidates/selection", tags=["Selected candidacy"])
